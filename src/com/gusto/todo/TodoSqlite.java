@@ -12,9 +12,7 @@ public class TodoSqlite {
 			try {
 				String defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
 				UIManager.setLookAndFeel(defaultLookAndFeel);
-
 				TarefaView frame = new TarefaView();
-				frame.renderizarTela();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
