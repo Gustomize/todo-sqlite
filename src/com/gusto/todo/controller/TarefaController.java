@@ -58,11 +58,12 @@ public class TarefaController {
 	}
 
 	public List<Tarefa> getTarefas() {
+		try {
+			tarefas = dao.listar();
+		} catch (DaoException e) {
+			e.printStackTrace();
+		}
 		return tarefas;
-	}
-
-	public void setTarefas(List<Tarefa> tarefas) {
-		this.tarefas = tarefas;
 	}
 
 }

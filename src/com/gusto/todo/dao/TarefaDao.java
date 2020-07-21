@@ -15,13 +15,12 @@ public class TarefaDao implements DAO<Tarefa> {
 
 	@Override
 	public void inserir(Tarefa t) throws DaoException {
-		String sql = "insert into tarefa values (?, ?, ?)";
+		String sql = "insert into tarefa (titulo, concluido) values (?, ?)";
 
 		try (Connection conn = Conexao.getConexao().conectar()) {
 			PreparedStatement preparedStatement = conn.prepareStatement(sql);
-			preparedStatement.setInt(1, t.getId());
-			preparedStatement.setString(2, t.getTitulo());
-			preparedStatement.setBoolean(3, false);
+			preparedStatement.setString(1, t.getTitulo());
+			preparedStatement.setBoolean(2, false);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
