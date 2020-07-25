@@ -2,6 +2,7 @@ package com.gusto.todo.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -18,6 +19,8 @@ import javax.swing.border.EmptyBorder;
 import com.gusto.todo.controller.TarefaController;
 import com.gusto.todo.exception.ControllerException;
 import com.gusto.todo.model.Tarefa;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class TarefaView extends JFrame {
 
@@ -33,8 +36,10 @@ public class TarefaView extends JFrame {
 	private JLabel lblNovaTarefa;
 	private JTextField textFieldNovaTarefa;
 	private JButton btnAdicionar;
-	
 	private TarefaTableModel tableModel;
+	private JPanel panelOpcoes;
+	private JButton btnAlterarTarefa;
+	private JButton btnExcluirTarefa;
 
 	public TarefaView() {
 		renderizarTela();
@@ -79,12 +84,48 @@ public class TarefaView extends JFrame {
 		panelTodasTarefas.add(scrollPane, BorderLayout.CENTER);
 
 		tableTarefas = new JTable();
-		tableModel = new TarefaTableModel(controller.getTarefas());
+		tableTarefas.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (tableTarefas.getSelectedRow() >= 0) {
+					btnAlterarTarefa.setEnabled(true);
+					btnExcluirTarefa.setEnabled(true);
+					alteraTextoBtn();
+				}
+			}
+		});
+		tableModel = new TarefaTableModel();
 		tableTarefas.setModel(tableModel);
-		tableTarefas.setPreferredScrollableViewportSize(new Dimension(500,300));
+		tableTarefas.setPreferredScrollableViewportSize(new Dimension(500, 300));
 		tableTarefas.setFillsViewportHeight(true);
 		tableTarefas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(tableTarefas);
+
+		panelOpcoes = new JPanel();
+		contentPane.add(panelOpcoes, BorderLayout.SOUTH);
+		panelOpcoes.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+		btnAlterarTarefa = new JButton("Concluir Tarefa");
+		btnAlterarTarefa.setEnabled(false);
+		btnAlterarTarefa.addActionListener(e -> {
+			Tarefa tarefaEditada = tableModel.getValue(tableTarefas.getSelectedRow());
+			
+			if (tableModel.getValueAt(tableTarefas.getSelectedRow(), 2) == Boolean.TRUE) {
+				refazerTarefa(tarefaEditada.getId(), tarefaEditada);
+			} else {
+				concluirTarefa(tarefaEditada.getId(), tarefaEditada);
+			}
+
+		});
+		panelOpcoes.add(btnAlterarTarefa);
+
+		btnExcluirTarefa = new JButton("Excluir Tarefa");
+		btnExcluirTarefa.setEnabled(false);
+		btnExcluirTarefa.addActionListener(e -> {
+			Tarefa tarefaExcluida = tableModel.getValue(tableTarefas.getSelectedRow());
+			removerTarefa(tarefaExcluida);
+		});
+		panelOpcoes.add(btnExcluirTarefa);
 
 		this.setTitle("Tarefas");
 		this.setSize(600, 800);
@@ -102,6 +143,46 @@ public class TarefaView extends JFrame {
 			controller.inserirTarefa(novaTarefa);
 			tableModel.onAdd(novaTarefa);
 			textFieldNovaTarefa.setText("");
+		} catch (ControllerException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void removerTarefa(Tarefa tarefa) {
+		try {
+			controller = new TarefaController();
+			controller.removerTarefa(tarefa.getId());
+			tableModel.onRemove(tableModel.indexOf(tarefa));
+		} catch (ControllerException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void alteraTextoBtn() {
+		if (tableModel.getValueAt(tableTarefas.getSelectedRow(), 2) == Boolean.TRUE) {
+			btnAlterarTarefa.setText("Refazer Tarefa");
+		} else {
+			btnAlterarTarefa.setText("Concluir Tarefa");
+		}
+	}
+
+	private void concluirTarefa(int id, Tarefa tarefa) {
+		try {
+			controller = new TarefaController();
+			tarefa.setConcluido(true);
+			controller.editarTarefa(id, tarefa);
+			tableModel.onAdd(tarefa);
+		} catch (ControllerException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void refazerTarefa(int id, Tarefa tarefa) {
+		try {
+			controller = new TarefaController();
+			tarefa.setConcluido(false);
+			controller.editarTarefa(id, tarefa);
+			tableModel.onAdd(tarefa);
 		} catch (ControllerException e) {
 			e.printStackTrace();
 		}

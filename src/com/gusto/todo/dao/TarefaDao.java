@@ -71,7 +71,7 @@ public class TarefaDao implements DAO<Tarefa> {
 
 	@Override
 	public void remover(int id) throws DaoException {
-		String sql = "delete from tarefas where id = ?";
+		String sql = "delete from tarefa where id = ?";
 
 		try (Connection conn = Conexao.getConexao().conectar()) {
 			PreparedStatement preparedStatement = conn.prepareStatement(sql);

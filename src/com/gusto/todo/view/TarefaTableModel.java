@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import com.gusto.todo.controller.TarefaController;
 import com.gusto.todo.model.Tarefa;
 
 public class TarefaTableModel extends AbstractTableModel {
@@ -13,12 +14,14 @@ public class TarefaTableModel extends AbstractTableModel {
 	private final int ID = 0;
 	private final int TAREFA = 1;
 	private final int CONCLUIDO = 2;
-	private String[] colunas = { "Id", "Tarefa", "Concluído" };
+	private String[] colunas = { "ID", "Tarefa", "Concluído" };
+
+	private TarefaController controller = new TarefaController();
 
 	private List<Tarefa> dados;
 
-	public TarefaTableModel(List<Tarefa> dados) {
-		this.dados = dados;
+	public TarefaTableModel() {
+		this.dados = controller.getTarefas();
 	}
 
 	@Override
@@ -69,7 +72,6 @@ public class TarefaTableModel extends AbstractTableModel {
 		if (columnIndex == ID) {
 			return false;
 		}
-
 		return true;
 	}
 
@@ -98,7 +100,7 @@ public class TarefaTableModel extends AbstractTableModel {
 	}
 
 	public void onAdd(Tarefa tarefa) {
-		dados.add(tarefa);
+		dados = controller.getTarefas();
 		fireTableRowsInserted(indexOf(tarefa), indexOf(tarefa));
 	}
 
