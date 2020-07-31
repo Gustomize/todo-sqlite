@@ -63,6 +63,7 @@ public class TarefaController {
 		} catch (DaoException e) {
 			e.printStackTrace();
 		}
+	
 		return tarefas;
 	}
 

@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
+
 public class Conexao {
 
-	private Connection connection;
 	private static Conexao conexao;
+	
+	private Connection connection;
 
 	private final String URL = "jdbc:sqlite:db/tarefas.db";
 
@@ -31,10 +34,9 @@ public class Conexao {
 		try {
 			if (connection == null || connection.isClosed()) {
 				connection = DriverManager.getConnection(URL);
-
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 
 		return connection;

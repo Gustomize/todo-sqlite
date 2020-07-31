@@ -32,6 +32,7 @@ public class TarefaDao implements DAO<Tarefa> {
 	@Override
 	public List<Tarefa> listar() throws DaoException {
 		List<Tarefa> tarefas = new ArrayList<Tarefa>();
+		
 		String sql = "select id, titulo, concluido from tarefa";
 
 		try (Connection conn = Conexao.getConexao().conectar()) {

@@ -4,24 +4,21 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.gusto.todo.controller.TarefaController;
 import com.gusto.todo.model.Tarefa;
 
 public class TarefaTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
 
-	private final int ID = 0;
-	private final int TAREFA = 1;
-	private final int CONCLUIDO = 2;
-	private String[] colunas = { "ID", "Tarefa", "Concluído" };
+	private final int TAREFA = 0;
+	private final int CONCLUIDO = 1;
+	private String[] colunas = {"Tarefa", "Concluído" };
 
-	private TarefaController controller = new TarefaController();
 
 	private List<Tarefa> dados;
 
-	public TarefaTableModel() {
-		this.dados = controller.getTarefas();
+	public TarefaTableModel(List<Tarefa> dados) {
+		this.dados = dados;
 	}
 
 	@Override
@@ -37,8 +34,6 @@ public class TarefaTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		switch (columnIndex) {
-		case ID:
-			return dados.get(rowIndex).getId();
 		case TAREFA:
 			return dados.get(rowIndex).getTitulo();
 		case CONCLUIDO:
@@ -51,8 +46,6 @@ public class TarefaTableModel extends AbstractTableModel {
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
-		case ID:
-			return int.class;
 		case TAREFA:
 			return String.class;
 		case CONCLUIDO:
@@ -69,10 +62,7 @@ public class TarefaTableModel extends AbstractTableModel {
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		if (columnIndex == ID) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	@Override
@@ -89,6 +79,8 @@ public class TarefaTableModel extends AbstractTableModel {
 		default:
 			throw new IndexOutOfBoundsException("Coluna Inválida!!!");
 		}
+		
+		fireTableCellUpdated(rowIndex, columnIndex);
 	}
 
 	public Tarefa getValue(int rowIndex) {
@@ -100,7 +92,7 @@ public class TarefaTableModel extends AbstractTableModel {
 	}
 
 	public void onAdd(Tarefa tarefa) {
-		dados = controller.getTarefas();
+		dados.add(tarefa);
 		fireTableRowsInserted(indexOf(tarefa), indexOf(tarefa));
 	}
 
@@ -115,4 +107,8 @@ public class TarefaTableModel extends AbstractTableModel {
 		fireTableRowsDeleted(indexBefore, indexBefore);
 	}
 
+	public void onUpdate(Tarefa tarefa) {
+		dados.add(tarefa);
+		fireTableRowsUpdated(indexOf(tarefa), indexOf(tarefa));
+	}
 }
