@@ -1,21 +1,21 @@
 package com.gusto.todo.view;
 
-import java.util.List;
+import com.gusto.todo.model.Tarefa;
 
 import javax.swing.table.AbstractTableModel;
-
-import com.gusto.todo.model.Tarefa;
+import java.util.List;
 
 public class TarefaTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
 
-	private final int TAREFA = 0;
-	private final int CONCLUIDO = 1;
-	private String[] colunas = {"Tarefa", "Concluído" };
+	private static final int TAREFA = 0;
+	private static final int CONCLUIDO = 1;
+	private static final String ERRO_COLUNA_INVALIDA = "Coluna Invï¿½lida!!!";
+	private final String[] colunas = {"Tarefa", "Concluï¿½do" };
 
 
-	private List<Tarefa> dados;
+	private final List<Tarefa> dados;
 
 	public TarefaTableModel(List<Tarefa> dados) {
 		this.dados = dados;
@@ -39,7 +39,7 @@ public class TarefaTableModel extends AbstractTableModel {
 		case CONCLUIDO:
 			return dados.get(rowIndex).isConcluido();
 		default:
-			throw new IndexOutOfBoundsException("Coluna Inválida!!!");
+			throw new IndexOutOfBoundsException(ERRO_COLUNA_INVALIDA);
 		}
 	}
 
@@ -51,7 +51,7 @@ public class TarefaTableModel extends AbstractTableModel {
 		case CONCLUIDO:
 			return Boolean.class;
 		default:
-			throw new IndexOutOfBoundsException("Coluna Inválida!!!");
+			throw new IndexOutOfBoundsException(ERRO_COLUNA_INVALIDA);
 		}
 	}
 
@@ -77,7 +77,7 @@ public class TarefaTableModel extends AbstractTableModel {
 			tarefa.setConcluido((boolean) aValue);
 			break;
 		default:
-			throw new IndexOutOfBoundsException("Coluna Inválida!!!");
+			throw new IndexOutOfBoundsException(ERRO_COLUNA_INVALIDA);
 		}
 		
 		fireTableCellUpdated(rowIndex, columnIndex);
@@ -99,12 +99,6 @@ public class TarefaTableModel extends AbstractTableModel {
 	public void onRemove(int rowIndex) {
 		dados.remove(rowIndex);
 		fireTableRowsDeleted(rowIndex, rowIndex);
-	}
-
-	public void onRemove(Tarefa tarefa) {
-		int indexBefore = indexOf(tarefa);
-		dados.remove(tarefa);
-		fireTableRowsDeleted(indexBefore, indexBefore);
 	}
 
 	public void onUpdate(Tarefa tarefa) {

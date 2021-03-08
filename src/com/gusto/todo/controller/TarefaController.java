@@ -12,7 +12,7 @@ import com.gusto.todo.model.Tarefa;
 public class TarefaController {
 
 	DAO<Tarefa> dao = new TarefaDao();
-	List<Tarefa> tarefas = new ArrayList<Tarefa>();
+	List<Tarefa> tarefas = new ArrayList<>();
 
 	public void inserirTarefa(Tarefa t) throws ControllerException {
 		try {

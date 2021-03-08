@@ -12,8 +12,6 @@ public class Conexao {
 	
 	private Connection connection;
 
-	private final String URL = "jdbc:sqlite:db/tarefas.db";
-
 	private Conexao() {
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -33,10 +31,11 @@ public class Conexao {
 	public Connection conectar() {
 		try {
 			if (connection == null || connection.isClosed()) {
-				connection = DriverManager.getConnection(URL);
+				String url = "jdbc:sqlite:db/tarefas.db";
+				connection = DriverManager.getConnection(url);
 			}
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados", "Erro", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Nï¿½o foi possï¿½vel conectar ao banco de dados", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 
 		return connection;
